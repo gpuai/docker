@@ -1,0 +1,115 @@
+
+version: '3.7'
+services:
+  psql:
+    container_name : gpuai-dev_psql
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: rpFiZszG6pjm6zfW
+    volumes:
+      - /mnt/docker/gpuai-dev/db/psql:/var/lib/postgresql/data
+    networks:
+      - gpuai-dev
+  redis:
+    container_name : gpuai-dev_redis
+    image: redis:6
+    restart: unless-stopped
+    volumes:
+      - /mnt/docker/gpuai-dev/db/redis:/data
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+    command:
+      - redis-server
+      - /usr/local/etc/redis/redis.conf
+    networks:
+      - gpuai-dev
+  cache:
+    container_name : gpuai-dev_cache
+    image: redis:6
+    restart: unless-stopped
+    volumes:
+      - /tmp/docker/gpuai-dev/cache:/data
+      - ./docker/cache.conf:/usr/local/etc/redis/redis.conf
+    command:
+      - redis-server
+      - /usr/local/etc/redis/redis.conf
+    networks:
+      - gpuai-dev
+  pika:
+    container_name : gpuai-dev_pika
+    image: pikadb/pika
+    restart: unless-stopped
+    volumes:
+      - /tmp/docker/gpuai-dev/pika:/pika/log
+      - /mnt/docker/gpuai-dev/db/pika:/pika/db
+    networks:
+      - gpuai-dev
+
+  gpuai-dev-zsp:
+    container_name : gpuai-dev-zsp
+    hostname : gpuai-dev-zsp
+    image: gpuai/dev
+    privileged: true
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    ports:
+      - "30100:22"
+      - "30108:80"
+      - "30110-30113:30010-30013"
+    volumes:
+      - /mnt/docker/gpuai-dev/user/zsp/ssh/etc/ssh/host:/etc/ssh/host
+      - /mnt/docker/gpuai-dev/user/zsp/ssh/root/.ssh:/root/.ssh
+      - /mnt/docker/gpuai-dev/user/zsp/_/etc/rc.d:/etc/rc.d
+      - /mnt/docker/gpuai-dev/user/zsp/_/etc/supervisor.d:/etc/supervisor.d
+      - /mnt/docker/gpuai-dev/user/zsp/_/home:/home
+      - /mnt/docker/gpuai-dev/user/zsp/_/root:/root
+      - /mnt/docker/gpuai-dev/share:/share
+      - /tmp/docker/gpuai-dev/user/zsp/tmp:/tmp
+      - /tmp/docker/gpuai-dev/user/zsp/log:/var/log
+      - /var/log/docker/gpuai-dev/zsp/supervisor:/var/log/supervisor
+      - /etc/nginx/conf.d/gpuai-dev/zsp:/etc/nginx/conf.d
+    networks:
+      - gpuai-dev
+    device_requests:
+      - capabilities:
+        - "gpu"
+
+
+  gpuai-dev-bear:
+    container_name : gpuai-dev-bear
+    hostname : gpuai-dev-bear
+    image: gpuai/dev
+    privileged: true
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    ports:
+      - "30200:22"
+      - "30208:80"
+      - "30210-30213:30010-30013"
+    volumes:
+      - /mnt/docker/gpuai-dev/user/bear/ssh/etc/ssh/host:/etc/ssh/host
+      - /mnt/docker/gpuai-dev/user/bear/ssh/root/.ssh:/root/.ssh
+      - /mnt/docker/gpuai-dev/user/bear/_/etc/rc.d:/etc/rc.d
+      - /mnt/docker/gpuai-dev/user/bear/_/etc/supervisor.d:/etc/supervisor.d
+      - /mnt/docker/gpuai-dev/user/bear/_/home:/home
+      - /mnt/docker/gpuai-dev/user/bear/_/root:/root
+      - /mnt/docker/gpuai-dev/share:/share
+      - /tmp/docker/gpuai-dev/user/bear/tmp:/tmp
+      - /tmp/docker/gpuai-dev/user/bear/log:/var/log
+      - /var/log/docker/gpuai-dev/bear/supervisor:/var/log/supervisor
+      - /etc/nginx/conf.d/gpuai-dev/bear:/etc/nginx/conf.d
+    networks:
+      - gpuai-dev
+    device_requests:
+      - capabilities:
+        - "gpu"
+
+networks:
+  gpuai-dev:
+
