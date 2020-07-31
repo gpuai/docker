@@ -10,3 +10,4 @@ curl -fsSL https://get.docker.com | sudo bash -s docker --mirror Aliyun
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo apt-get install -y tmux python3-pip
+sudo ln -s /usr/bin/pip3 /usr/bin/pip
