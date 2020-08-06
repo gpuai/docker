@@ -1,100 +1,109 @@
-SHELL ["/bin/bash", "-c"]
+#!/usr/bin/env bash
+set -e
 
-ENV DEBIAN_FRONTEND noninteractive 
-ENV TERM xterm-256color
-ENV LANG zh_CN.UTF-8
-ENV LC_ALL zh_CN.UTF-8
-ENV LANGUAGE zh_CN.UTF-8
+git_clone (){
+if [ ! -d "$2" ]; then
+git clone $1 $2
+fi
+}
 
-ENV TZ=Asia/Shanghai
-ENV CARGO_HOME /opt/rust
-ENV RUSTUP_HOME /opt/rust
-#ENV RUSTUP_UPDATE_ROOT https://mirrors.ustc.edu.cn/rust-static/rustup
-#ENV RUSTUP_DIST_SERVER https://mirrors.ustc.edu.cn/rust-static
-#apt-get clean &&\
-#apt-get autoclean &&\
-COPY os/root/.cargo /root/.cargo
+_DIR=$(cd "$(dirname "$0")"; pwd)
+cd $_DIR
 
-RUN sed -i 's/archive.ubuntu.com/mirrors.163.com/g' /etc/apt/sources.list &&\
-apt-get update &&\
-ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&\
-echo $TZ > /etc/timezone &&\
-apt-get install -y zlib1g-dev tzdata python3 sudo curl wget python3-pip tmux openssh-client openssh-server zsh language-pack-zh-hans rsync mlocate git g++ python3-dev gist less util-linux apt-utils lua5.3 ctags htop tree cron python-dev libpq-dev postgresql-client bsdmainutils libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libffi-dev liblzma-dev direnv iputils-ping glances dstat software-properties-common neovim golang zstd pixz jq &&\
-locale-gen zh_CN.UTF-8 &&\
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* &&\
-passwd -d root &&\
-chsh -s /bin/zsh root &&\
-ln -s /usr/bin/pip3 /usr/bin/pip &&\
-pip install yapf flake8 supervisor python-language-server &&\
-ln -s /usr/bin/gist-paste /usr/bin/gist &&\
-rm -rf /etc/ssh/ssh_host_* &&\
-cd /usr/local && wget https://raw.githubusercontent.com/junegunn/fzf/master/install -O fzf.install.sh && bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ &&\
-curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path &&\
-cd $CARGO_HOME &&\
-ln -s ~/.cargo/config . &&\
-source $CARGO_HOME/env &&\
-cargo install ripgrep cargo-cache exa sd fd-find tokei diskus --root /usr/local &&\
-cargo-cache --remove-dir git-repos,registry-sources &&\
+export DEBIAN_FRONTEND=noninteractive
+export TERM=xterm-256color
+export LANG=zh_CN.UTF-8
+export LC_ALL=zh_CN.UTF-8
+export LANGUAGE=zh_CN.UTF-8
+
+export TZ=Asia/Shanghai
+export CARGO_HOME=/opt/rust
+export RUSTUP_HOME=/opt/rust
+export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+
+#  apt-get update
+#  apt-get install -y software-properties-common
+#  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DBB0BE9366964F134855E2255F96FCF8231B6DD
+#  编辑 /etc/apt/sources.list
+#  加入 deb http://ppa.launchpad.net/neovim-ppa/stable/ubuntu bionic main
+#  add-apt-repository -y ppa:neovim-ppa/stable
+#  apt-get update
+
+sed -i 's/archive.ubuntu.com/mirrors.163.com/g' /etc/apt/sources.list
+apt-get update
+ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
+echo $TZ > /etc/timezone
+apt-get remove -y vim &&
+apt-get install -y zlib1g-dev tzdata python3 sudo curl wget python3-pip tmux openssh-client openssh-server zsh rsync mlocate git g++ python3-dev gist less util-linux apt-utils lua5.3 ctags htop tree cron python-dev libpq-dev postgresql-client bsdmainutils libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libffi-dev liblzma-dev direnv iputils-ping glances dstat software-properties-common neovim golang zstd pixz jq
+locale-gen zh_CN.UTF-8
+rsync -av $_DIR/os/root/.cargo/ /root/.cargo
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+passwd -d root
+chsh -s /bin/zsh root
+pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
+rm /usr/bin/pip
+ln -s /usr/bin/pip3 /usr/bin/pip
+pip install yapf flake8 supervisor python-language-server
+rm -rf /usr/bin/gist
+ln -s /usr/bin/gist-paste /usr/bin/gist
+
+if ! hash fzf 2>/dev/null ; then
+cd /usr/local && wget https://raw.githubusercontent.com/junegunn/fzf/master/install -O fzf.install.sh && bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~
+fi
+
+curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+cd $CARGO_HOME
+rm -rf config
+ln -s ~/.cargo/config .
+source $CARGO_HOME/env
+cargo install ripgrep cargo-cache exa sd fd-find tokei diskus --root /usr/local
+cargo-cache --remove-dir git-repos,registry-sources
 echo 'PATH=/opt/rust/bin:$PATH' >> /etc/profile.d/path.sh
 
 
-SHELL ["/bin/zsh", "-c"]
+# 不 passwd -d 这样没法ssh秘钥登录，每次都要输入密码
+
+git_clone https://github.com/asdf-vm/asdf.git ~/.asdf
 
 
-# 不 passwd -d 这样没法ssh秘钥登录，每次都要输入密码 
-
-RUN \
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf &&\
-cd ~/.asdf &&\
-git checkout "$(git describe --abbrev=0 --tags)" &&\
-. ~/.asdf/asdf.sh &&\
-asdf plugin add python &&\
-python_version=$(asdf list all python|rg 3\\.7|rg "^[\d\.]+$"|tail -1) &&\
-asdf install python $python_version &&\
-asdf global python $python_version &&\
-pip config set global.index-url https://mirrors.aliyun.com/pypi/simple &&\
-pip install ipython xonsh virtualenv &&\
-asdf plugin add nodejs &&\
-~/.asdf/plugins/nodejs/bin/import-release-team-keyring &&\
-nodejs_version=$(asdf list all nodejs|tail -1)&&\
-asdf install nodejs $nodejs_version &&\
-asdf global nodejs $nodejs_version &&\
-asdf plugin add yarn &&\
-yarn_version=$(asdf list all yarn|tail -1) &&\
-asdf install yarn $yarn_version &&\
-asdf global yarn $yarn_version &&\
-asdf reshim &&\
-yarn config set registry https://registry.npm.taobao.org &&\
-yarn config set prefix ~/.yarn &&\
-yarn global add neovim npm-check-updates coffeescript node-pre-gyp &&\
-asdf reshim &&\
-update-alternatives --install /usr/bin/python python /usr/bin/python3 1 
+cd ~/.asdf
+git checkout "$(git describe --abbrev=0 --tags)"
+. ~/.asdf/asdf.sh
+pip install ipython xonsh virtualenv
+asdf plugin add nodejs || true
+~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+nodejs_version=$(asdf list all nodejs|tail -1)
+asdf install nodejs $nodejs_version
+asdf global nodejs $nodejs_version
+asdf plugin add yarn || true
+yarn_version=$(asdf list all yarn|tail -1)
+asdf install yarn $yarn_version
+asdf global yarn $yarn_version
+asdf reshim
+yarn config set registry https://registry.npm.taobao.org
+yarn config set prefix ~/.yarn
+yarn global add neovim npm-check-updates coffeescript node-pre-gyp
+asdf reshim
 
 
-COPY os/root /root
+rsync -av $_DIR/os/root /
 
-RUN \
-mkdir -p ~/.zplugin &&\
-git clone https://github.com/zdharma/zplugin.git ~/.zplugin/bin --depth=1 &&\
-git clone --depth=1 https://github.com/romkatv/gitstatus.git ~/.gitstatus &&\ 
-cat /root/.zplugin.zsh|rg "program|load|source|light"|zsh &&\
-source ~/.zplugin/plugins/romkatv---powerlevel10k/gitstatus/install 
+mkdir -p ~/.zplugin
+git_clone https://github.com/zdharma/zplugin.git ~/.zplugin/bin
 
-COPY os/usr/share/nvim /usr/share/nvim
-COPY os/etc/vim /etc/vim
+git_clone https://gitee.com/romkatv/gitstatus.git ~/.gitstatus
 
-RUN \
-git clone https://github.com/Shougo/dein.vim --depth=1 /etc/vim/repos/github.com/Shougo/dein.vim &&\
-vim +"call dein#install()" +qall &&\
-vim +'call dein#update()' +qall &&\ 
-vim +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur' +qa 
+cat /root/.zplugin.zsh|rg "program|load|source|light"|zsh
+zsh ~/.zplugin/plugins/romkatv---powerlevel10k/gitstatus/install
 
-WORKDIR /
-COPY os .
-COPY boot .
+rsync -av $_DIR/os/ /
 
-RUN mv /root /.sync/ && updatedb
+git_clone https://github.com/Shougo/dein.vim /etc/vim/repos/github.com/Shougo/dein.vim
+vim +"call dein#install()" +qall
+vim +'call dein#update()' +qall
+vim +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur' +qa
 
 
-CMD ["/etc/rc.local"]
-
+apt-get clean
+apt-get autoclean
