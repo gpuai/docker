@@ -1,5 +1,13 @@
 ![Docker Image](https://github.com/ai-trade/docker/workflows/Docker%20Image/badge.svg)
 
+# 系统初始化
+
+```
+apt-get update
+apt-get install -y curl 
+bash <(curl -sL http://t.cn/A6UyO55v)
+```
+
 # docker gpu 使用
 
 1. `apt-get remove nvidia-* -y`
