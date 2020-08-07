@@ -1,7 +1,7 @@
 <%
 image=CONFIG.IMAGE
 image_id=image.replace("/","-")
-docker="/mnt/docker/%s"%image_id
+docker="/data/docker/%s"%image_id
 tmp="/tmp/docker/"+image_id
 %>
 version: '3.7'

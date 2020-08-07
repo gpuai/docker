@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_PASSWORD: rpFiZszG6pjm6zfW
     volumes:
-      - /mnt/docker/gpuai-dev/db/psql:/var/lib/postgresql/data
+      - /data/docker/gpuai-dev/db/psql:/var/lib/postgresql/data
     networks:
       - gpuai-dev
   redis:
@@ -16,7 +16,7 @@ services:
     image: redis:6
     restart: unless-stopped
     volumes:
-      - /mnt/docker/gpuai-dev/db/redis:/data
+      - /data/docker/gpuai-dev/db/redis:/data
       - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
     command:
       - redis-server
@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     volumes:
       - /tmp/docker/gpuai-dev/pika:/pika/log
-      - /mnt/docker/gpuai-dev/db/pika:/pika/db
+      - /data/docker/gpuai-dev/db/pika:/pika/db
     networks:
       - gpuai-dev
 
@@ -60,13 +60,13 @@ services:
       - "30108:80"
       - "30110-30113:30010-30013"
     volumes:
-      - /mnt/docker/gpuai-dev/user/zsp/ssh/etc/ssh/host:/etc/ssh/host
-      - /mnt/docker/gpuai-dev/user/zsp/ssh/root/.ssh:/root/.ssh
-      - /mnt/docker/gpuai-dev/user/zsp/_/etc/rc.d:/etc/rc.d
-      - /mnt/docker/gpuai-dev/user/zsp/_/etc/supervisor.d:/etc/supervisor.d
-      - /mnt/docker/gpuai-dev/user/zsp/_/home:/home
-      - /mnt/docker/gpuai-dev/user/zsp/_/root:/root
-      - /mnt/docker/gpuai-dev/share:/share
+      - /data/docker/gpuai-dev/user/zsp/ssh/etc/ssh/host:/etc/ssh/host
+      - /data/docker/gpuai-dev/user/zsp/ssh/root/.ssh:/root/.ssh
+      - /data/docker/gpuai-dev/user/zsp/_/etc/rc.d:/etc/rc.d
+      - /data/docker/gpuai-dev/user/zsp/_/etc/supervisor.d:/etc/supervisor.d
+      - /data/docker/gpuai-dev/user/zsp/_/home:/home
+      - /data/docker/gpuai-dev/user/zsp/_/root:/root
+      - /data/docker/gpuai-dev/share:/share
       - /tmp/docker/gpuai-dev/user/zsp/tmp:/tmp
       - /tmp/docker/gpuai-dev/user/zsp/log:/var/log
       - /var/log/docker/gpuai-dev/zsp/supervisor:/var/log/supervisor
@@ -93,13 +93,13 @@ services:
       - "30208:80"
       - "30210-30213:30010-30013"
     volumes:
-      - /mnt/docker/gpuai-dev/user/bear/ssh/etc/ssh/host:/etc/ssh/host
-      - /mnt/docker/gpuai-dev/user/bear/ssh/root/.ssh:/root/.ssh
-      - /mnt/docker/gpuai-dev/user/bear/_/etc/rc.d:/etc/rc.d
-      - /mnt/docker/gpuai-dev/user/bear/_/etc/supervisor.d:/etc/supervisor.d
-      - /mnt/docker/gpuai-dev/user/bear/_/home:/home
-      - /mnt/docker/gpuai-dev/user/bear/_/root:/root
-      - /mnt/docker/gpuai-dev/share:/share
+      - /data/docker/gpuai-dev/user/bear/ssh/etc/ssh/host:/etc/ssh/host
+      - /data/docker/gpuai-dev/user/bear/ssh/root/.ssh:/root/.ssh
+      - /data/docker/gpuai-dev/user/bear/_/etc/rc.d:/etc/rc.d
+      - /data/docker/gpuai-dev/user/bear/_/etc/supervisor.d:/etc/supervisor.d
+      - /data/docker/gpuai-dev/user/bear/_/home:/home
+      - /data/docker/gpuai-dev/user/bear/_/root:/root
+      - /data/docker/gpuai-dev/share:/share
       - /tmp/docker/gpuai-dev/user/bear/tmp:/tmp
       - /tmp/docker/gpuai-dev/user/bear/log:/var/log
       - /var/log/docker/gpuai-dev/bear/supervisor:/var/log/supervisor
