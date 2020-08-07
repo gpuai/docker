@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+ldconfig
 mkdir -p  /etc/ssh/host
 keygen () {
 FILE=/etc/ssh/host/ssh_host_$1_key
