@@ -41,9 +41,9 @@ rsync -av $_DIR/os/root/.cargo/ /root/.cargo
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 passwd -d root
 chsh -s /bin/zsh root
-pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 rm /usr/bin/pip
 ln -s /usr/bin/pip3 /usr/bin/pip
+pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 pip install yapf flake8 supervisor python-language-server
 rm -rf /usr/bin/gist
 ln -s /usr/bin/gist-paste /usr/bin/gist
