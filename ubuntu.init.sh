@@ -35,7 +35,7 @@ apt-get update
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 echo $TZ > /etc/timezone
 apt-get remove -y vim &&
-apt-get install -y zlib1g-dev tzdata python3 sudo curl wget python3-pip tmux openssh-client openssh-server zsh rsync mlocate git g++ python3-dev gist less util-linux apt-utils lua5.3 ctags htop tree cron python-dev libpq-dev postgresql-client bsdmainutils libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libffi-dev liblzma-dev direnv iputils-ping glances dstat software-properties-common neovim golang zstd pixz jq aptitude
+apt-get install -y zlib1g-dev tzdata python3 sudo curl wget python3-pip tmux openssh-client openssh-server zsh rsync mlocate git g++ python3-dev gist less util-linux apt-utils lua5.3 ctags htop tree cron python-dev libpq-dev postgresql-client bsdmainutils libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libffi-dev liblzma-dev direnv iputils-ping glances dstat software-properties-common neovim golang zstd pixz jq aptitude git-extras
 locale-gen zh_CN.UTF-8
 rsync -av $_DIR/os/root/.cargo/ /root/.cargo
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -49,7 +49,7 @@ rm -rf /usr/bin/gist
 ln -s /usr/bin/gist-paste /usr/bin/gist
 
 if ! hash fzf 2>/dev/null ; then
-aptitude update 
+aptitude update
 aptitude install -y fzf
 #cd /usr/local && wget https://raw.githubusercontent.com/junegunn/fzf/master/install -O fzf.install.sh && bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~
 fi
