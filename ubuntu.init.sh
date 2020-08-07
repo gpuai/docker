@@ -104,6 +104,6 @@ vim +"call dein#install()" +qall
 vim +'call dein#update()' +qall
 vim +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur' +qa
 
-
+apt-get autoremove
 apt-get clean
 apt-get autoclean
