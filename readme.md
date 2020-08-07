@@ -4,8 +4,10 @@
 
 ```
 apt-get update
-apt-get install -y curl 
-bash <(curl -sL http://t.cn/A6UyO55v)
+apt-get install -y curl openssh-server tmux git
+systemctl start ssh
+systemctl enable ssh
+
 ```
 
 # docker gpu 使用
