@@ -3,7 +3,7 @@ set -e
 
 git_clone (){
 if [ ! -d "$2" ]; then
-git clone $1 $2
+git clone $1 $2 --depth=1
 fi
 }
 
@@ -41,7 +41,7 @@ rsync -av $_DIR/os/root/.cargo/ /root/.cargo
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 passwd -d root
 chsh -s /bin/zsh root
-rm /usr/bin/pip
+rm -rf /usr/bin/pip
 ln -s /usr/bin/pip3 /usr/bin/pip
 pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 pip install yapf flake8 supervisor python-language-server
@@ -49,7 +49,8 @@ rm -rf /usr/bin/gist
 ln -s /usr/bin/gist-paste /usr/bin/gist
 
 if ! hash fzf 2>/dev/null ; then
-cd /usr/local && wget https://raw.githubusercontent.com/junegunn/fzf/master/install -O fzf.install.sh && bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~
+apt-get install -y fzf
+#cd /usr/local && wget https://raw.githubusercontent.com/junegunn/fzf/master/install -O fzf.install.sh && bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~
 fi
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
@@ -61,14 +62,13 @@ cargo install ripgrep cargo-cache exa sd fd-find tokei diskus --root /usr/local
 cargo-cache --remove-dir git-repos,registry-sources
 echo 'PATH=/opt/rust/bin:$PATH' >> /etc/profile.d/path.sh
 
-
 # 不 passwd -d 这样没法ssh秘钥登录，每次都要输入密码
 
 git_clone https://github.com/asdf-vm/asdf.git ~/.asdf
 
 
 cd ~/.asdf
-git checkout "$(git describe --abbrev=0 --tags)"
+#git checkout "$(git describe --abbrev=0 --tags)"
 . ~/.asdf/asdf.sh
 pip install ipython xonsh virtualenv
 asdf plugin add nodejs || true
@@ -83,7 +83,8 @@ asdf global yarn $yarn_version
 asdf reshim
 yarn config set registry https://registry.npm.taobao.org
 yarn config set prefix ~/.yarn
-yarn global add neovim npm-check-updates coffeescript node-pre-gyp
+npm config set registry https://registry.npm.taobao.org
+npm install  --unsafe-perm=true --allow-root --scripts-prepend-node-path -g coffeescript neovim npm-check-updates node-pre-gyp
 asdf reshim
 
 
@@ -104,6 +105,6 @@ vim +"call dein#install()" +qall
 vim +'call dein#update()' +qall
 vim +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur' +qa
 
-apt-get autoremove
-apt-get clean
-apt-get autoclean
+apt-get autoremove -y
+apt-get clean -y
+apt-get autoclean -y
