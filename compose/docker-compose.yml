@@ -2,53 +2,53 @@
 version: '3.7'
 services:
   psql:
-    container_name : gpuai-dev_psql
+    container_name : gpuai-nvidia_psql
     image: postgres:13
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: rpFiZszG6pjm6zfW
     volumes:
-      - /data/docker/gpuai-dev/db/psql:/var/lib/postgresql/data
+      - /data/docker/gpuai-nvidia/db/psql:/var/lib/postgresql/data
     networks:
-      - gpuai-dev
+      - gpuai-nvidia
   redis:
-    container_name : gpuai-dev_redis
+    container_name : gpuai-nvidia_redis
     image: redis:6
     restart: unless-stopped
     volumes:
-      - /data/docker/gpuai-dev/db/redis:/data
+      - /data/docker/gpuai-nvidia/db/redis:/data
       - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
     command:
       - redis-server
       - /usr/local/etc/redis/redis.conf
     networks:
-      - gpuai-dev
+      - gpuai-nvidia
   cache:
-    container_name : gpuai-dev_cache
+    container_name : gpuai-nvidia_cache
     image: redis:6
     restart: unless-stopped
     volumes:
-      - /tmp/docker/gpuai-dev/cache:/data
+      - /tmp/docker/gpuai-nvidia/cache:/data
       - ./docker/cache.conf:/usr/local/etc/redis/redis.conf
     command:
       - redis-server
       - /usr/local/etc/redis/redis.conf
     networks:
-      - gpuai-dev
+      - gpuai-nvidia
   pika:
-    container_name : gpuai-dev_pika
+    container_name : gpuai-nvidia_pika
     image: pikadb/pika
     restart: unless-stopped
     volumes:
-      - /tmp/docker/gpuai-dev/pika:/pika/log
-      - /data/docker/gpuai-dev/db/pika:/pika/db
+      - /tmp/docker/gpuai-nvidia/pika:/pika/log
+      - /data/docker/gpuai-nvidia/db/pika:/pika/db
     networks:
-      - gpuai-dev
+      - gpuai-nvidia
 
-  gpuai-dev-zsp:
-    container_name : gpuai-dev-zsp
-    hostname : gpuai-dev-zsp
-    image: gpuai/dev
+  gpuai-nvidia-zsp:
+    container_name : gpuai-nvidia-zsp
+    hostname : gpuai-nvidia-zsp
+    image: gpuai/nvidia
     privileged: true
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -60,28 +60,28 @@ services:
       - "30108:80"
       - "30110-30113:30010-30013"
     volumes:
-      - /data/docker/gpuai-dev/user/zsp/ssh/etc/ssh/host:/etc/ssh/host
-      - /data/docker/gpuai-dev/user/zsp/ssh/root/.ssh:/root/.ssh
-      - /data/docker/gpuai-dev/user/zsp/_/etc/rc.d:/etc/rc.d
-      - /data/docker/gpuai-dev/user/zsp/_/etc/supervisor.d:/etc/supervisor.d
-      - /data/docker/gpuai-dev/user/zsp/_/home:/home
-      - /data/docker/gpuai-dev/user/zsp/_/root:/root
-      - /data/docker/gpuai-dev/share:/share
-      - /tmp/docker/gpuai-dev/user/zsp/tmp:/tmp
-      - /tmp/docker/gpuai-dev/user/zsp/log:/var/log
-      - /var/log/docker/gpuai-dev/zsp/supervisor:/var/log/supervisor
-      - /etc/nginx/conf.d/gpuai-dev/zsp:/etc/nginx/conf.d
+      - /data/docker/gpuai-nvidia/user/zsp/ssh/etc/ssh/host:/etc/ssh/host
+      - /data/docker/gpuai-nvidia/user/zsp/ssh/root/.ssh:/root/.ssh
+      - /data/docker/gpuai-nvidia/user/zsp/_/etc/rc.d:/etc/rc.d
+      - /data/docker/gpuai-nvidia/user/zsp/_/etc/supervisor.d:/etc/supervisor.d
+      - /data/docker/gpuai-nvidia/user/zsp/_/home:/home
+      - /data/docker/gpuai-nvidia/user/zsp/_/root:/root
+      - /data/docker/gpuai-nvidia/share:/share
+      - /tmp/docker/gpuai-nvidia/user/zsp/tmp:/tmp
+      - /tmp/docker/gpuai-nvidia/user/zsp/log:/var/log
+      - /var/log/docker/gpuai-nvidia/zsp/supervisor:/var/log/supervisor
+      - /etc/nginx/conf.d/gpuai-nvidia/zsp:/etc/nginx/conf.d
     networks:
-      - gpuai-dev
+      - gpuai-nvidia
     device_requests:
       - capabilities:
         - "gpu"
 
 
-  gpuai-dev-bear:
-    container_name : gpuai-dev-bear
-    hostname : gpuai-dev-bear
-    image: gpuai/dev
+  gpuai-nvidia-bear:
+    container_name : gpuai-nvidia-bear
+    hostname : gpuai-nvidia-bear
+    image: gpuai/nvidia
     privileged: true
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -93,23 +93,23 @@ services:
       - "30208:80"
       - "30210-30213:30010-30013"
     volumes:
-      - /data/docker/gpuai-dev/user/bear/ssh/etc/ssh/host:/etc/ssh/host
-      - /data/docker/gpuai-dev/user/bear/ssh/root/.ssh:/root/.ssh
-      - /data/docker/gpuai-dev/user/bear/_/etc/rc.d:/etc/rc.d
-      - /data/docker/gpuai-dev/user/bear/_/etc/supervisor.d:/etc/supervisor.d
-      - /data/docker/gpuai-dev/user/bear/_/home:/home
-      - /data/docker/gpuai-dev/user/bear/_/root:/root
-      - /data/docker/gpuai-dev/share:/share
-      - /tmp/docker/gpuai-dev/user/bear/tmp:/tmp
-      - /tmp/docker/gpuai-dev/user/bear/log:/var/log
-      - /var/log/docker/gpuai-dev/bear/supervisor:/var/log/supervisor
-      - /etc/nginx/conf.d/gpuai-dev/bear:/etc/nginx/conf.d
+      - /data/docker/gpuai-nvidia/user/bear/ssh/etc/ssh/host:/etc/ssh/host
+      - /data/docker/gpuai-nvidia/user/bear/ssh/root/.ssh:/root/.ssh
+      - /data/docker/gpuai-nvidia/user/bear/_/etc/rc.d:/etc/rc.d
+      - /data/docker/gpuai-nvidia/user/bear/_/etc/supervisor.d:/etc/supervisor.d
+      - /data/docker/gpuai-nvidia/user/bear/_/home:/home
+      - /data/docker/gpuai-nvidia/user/bear/_/root:/root
+      - /data/docker/gpuai-nvidia/share:/share
+      - /tmp/docker/gpuai-nvidia/user/bear/tmp:/tmp
+      - /tmp/docker/gpuai-nvidia/user/bear/log:/var/log
+      - /var/log/docker/gpuai-nvidia/bear/supervisor:/var/log/supervisor
+      - /etc/nginx/conf.d/gpuai-nvidia/bear:/etc/nginx/conf.d
     networks:
-      - gpuai-dev
+      - gpuai-nvidia
     device_requests:
       - capabilities:
         - "gpu"
 
 networks:
-  gpuai-dev:
+  gpuai-nvidia:
 
