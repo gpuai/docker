@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 class CONFIG:
-  IMAGE = "gpuai/dev"
+  IMAGE = "gpuai/nvidia"
   USER = (
     ("zsp",1),
     ("bear",2)
