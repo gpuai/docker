@@ -19,13 +19,13 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.163.com/g' /etc/apt/sources.list &&\
 apt-get update &&\
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&\
 echo $TZ > /etc/timezone &&\
-apt-get install -y zlib1g-dev tzdata python3 sudo curl wget python3-pip tmux openssh-client openssh-server zsh language-pack-zh-hans rsync mlocate git g++ python3-dev gist less util-linux apt-utils lua5.3 ctags htop tree cron python-dev libpq-dev postgresql-client bsdmainutils libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libffi-dev liblzma-dev direnv iputils-ping glances dstat software-properties-common neovim golang zstd pixz jq git-extras aptitude &&\
+apt-get install -y zlib1g-dev tzdata python3 sudo curl wget python3-pip tmux openssh-client openssh-server zsh language-pack-zh-hans rsync mlocate git g++ python3-dev gist less util-linux apt-utils lua5.3 ctags htop tree cron python-dev libpq-dev postgresql-client bsdmainutils libssl-dev libreadline-dev libbz2-dev libsqlite3-dev libffi-dev liblzma-dev direnv iputils-ping dstat software-properties-common neovim golang zstd pixz jq git-extras aptitude &&\
 locale-gen zh_CN.UTF-8 &&\
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* &&\
 passwd -d root &&\
 chsh -s /bin/zsh root &&\
 ln -s /usr/bin/pip3 /usr/bin/pip &&\
-pip install yapf flake8 supervisor python-language-server &&\
+pip install glances yapf flake8 supervisor python-language-server &&\
 ln -s /usr/bin/gist-paste /usr/bin/gist &&\
 rm -rf /etc/ssh/ssh_host_* &&\
 cd /usr/local && wget https://raw.githubusercontent.com/junegunn/fzf/master/install -O fzf.install.sh && bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ &&\
