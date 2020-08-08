@@ -1,3 +1,5 @@
+export RUSTUP_HOME=/opt/rust
+export CARGO_HOME=/opt/rust
 export GOPATH=/usr
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export PAGER=less
