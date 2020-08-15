@@ -6,8 +6,8 @@ editor = vim
 
 [alias]
 st = status
-rpull = pull
-pull = pull
+rpull = !git pull $1 && git submodule foreach --recursive \"git pull origin master --recurse-submodules\"
+rp = rpull
 
 [pack]
 deltaCacheSize = 128m
@@ -19,10 +19,11 @@ postbuffer = 5m
 
 [pull]
 default = current
+rebase = false
 
 [push]
 default = current
 
 [user]
-email = anyone@renwu.cool
-name = anyone
+email = x@y.com
+name = null
